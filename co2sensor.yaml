@@ -1,0 +1,87 @@
+esphome:
+  name: co2-sensor
+  comment: "Living Room CO2 Sensor"
+  area: Living Room
+
+esp32:
+  board: m5stack-core-esp32
+  framework:
+    type: arduino
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+# Enable logging
+logger:
+  level: DEBUG
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: !secret api_encryption_key
+
+# Enable OTA (Over-The-Air) updates
+ota:
+  platform: esphome
+
+# UART configuration
+uart:
+  rx_pin: 16
+  tx_pin: 17
+  baud_rate: 9600
+
+# SenseAir CO2 sensor configuration
+sensor:
+  - platform: senseair
+    co2:
+      name: "SenseAir CO2 Value"
+      id: co2_value
+      unit_of_measurement: "ppm"
+      icon: "mdi:molecule-co2"
+    update_interval: 60s
+
+# Display configuration
+spi:
+  clk_pin: 18
+  mosi_pin: 23
+  miso_pin: 19
+
+font:
+  - file: "https://github.com/google/fonts/raw/main/apache/robotoslab/RobotoSlab%5Bwght%5D.ttf"
+    id: web_font
+    size: 36
+
+switch:
+  - platform: gpio
+    pin: 32
+    name: "Backlight"
+    id: backlight
+    restore_mode: ALWAYS_ON
+
+display:
+  - platform: ili9xxx
+    model: M5STACK
+    cs_pin: 14
+    dc_pin: 27
+    reset_pin: 33
+    rotation: 0
+    invert_colors: true
+    lambda: |-
+      it.fill(Color::BLACK); // Fill the screen with black
+      it.printf(
+          it.get_width() / 2, it.get_height() / 2 - 32,
+          id(web_font),
+          Color::WHITE,
+          TextAlign::CENTER,
+          "CO2"
+      );
+
+      it.printf(
+          it.get_width() / 2, it.get_height() / 2 + 32,
+          id(web_font),
+          Color::WHITE,
+          TextAlign::CENTER,
+          "%.0f ppm",
+          id(co2_value).state
+      );
