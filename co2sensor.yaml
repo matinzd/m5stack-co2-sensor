@@ -25,7 +25,7 @@ api:
 ota:
   platform: esphome
 
-# UART configuration
+# UART configuration for SenseAir CO2 sensor
 uart:
   rx_pin: 16
   tx_pin: 17
