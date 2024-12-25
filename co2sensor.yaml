@@ -32,6 +32,7 @@ uart:
   baud_rate: 9600
 
 # SenseAir CO2 sensor configuration
+# Reference: https://rmtplusstoragesenseair.blob.core.windows.net/docs/Dev/publicerat/TDE2067.pdf
 sensor:
   - platform: senseair
     co2:
