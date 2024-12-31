@@ -35,12 +35,13 @@ uart:
 # Reference: https://rmtplusstoragesenseair.blob.core.windows.net/docs/Dev/publicerat/TDE2067.pdf
 sensor:
   - platform: senseair
+    id: senseair1
     co2:
       name: "SenseAir CO2 Value"
       id: co2_value
       unit_of_measurement: "ppm"
       icon: "mdi:molecule-co2"
-    update_interval: 60s
+    update_interval: 300s
 
 # Display configuration
 spi:
@@ -59,6 +60,26 @@ switch:
     name: "Backlight"
     id: backlight
     restore_mode: ALWAYS_ON
+  - platform: template
+    name: "Trigger background calibration"
+    turn_on_action:
+      - senseair.background_calibration: senseair1
+  - platform: template
+    name: "Get background calibration result"
+    turn_on_action:
+      - senseair.background_calibration_result: senseair1
+  - platform: template
+    name: "Get ABC Period"
+    turn_on_action:
+      - senseair.abc_get_period: senseair1
+  - platform: template
+    name: "Disable ABC"
+    turn_on_action:
+      - senseair.abc_disable: senseair1
+  - platform: template
+    name: "Enable ABC"
+    turn_on_action:
+      - senseair.abc_enable: senseair1
 
 display:
   - platform: ili9xxx
@@ -86,3 +107,4 @@ display:
           "%.0f ppm",
           id(co2_value).state
       );
+      
